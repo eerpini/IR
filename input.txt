@@ -1,0 +1,2 @@
+Let me see wht is going to happend to this text once I print it out and remove
+all the . and , and all these things, right now it should just print it per se
