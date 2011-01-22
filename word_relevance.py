@@ -58,7 +58,7 @@ def print_relevant_words(rel_count, threshold):
 	for key in rel_count.keys():
 		count = False
 		for word in rel_count[key].keys():
-			if rel_count[key][word] >= 2:
+			if rel_count[key][word] >= threshold:
 				print word+" ",
 				count = True
 		if count : print key+" " 
