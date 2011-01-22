@@ -1,3 +1,4 @@
+#TODO: we are not taking in the threshold for the relevance count as an argument
 """Program for calculating the word co occurrence in a given input file
 	arguments : 
 		input file 
@@ -26,5 +27,6 @@ if(len(sys.argv) >= 5):
 else:
 	n = 1
 filter_text.remove_non_printable(sys.argv[1],temp_file)
-word_relevance.calculate_correlation(temp_file, n)
+#note: threshold for printing the words is passed an explicit argument in the call below
+word_relevance.print_relevant_words(word_relevance.calculate_correlation(temp_file, n),1)
 
