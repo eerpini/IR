@@ -24,6 +24,8 @@ def calculate_correlation(input_file, n):
 	prev_word = ""
 	for line in input_fh:
 		for word in line.split():
+			if word == "Phil":
+				print word + "<<<>>>" + prev_word
 	#		print word+"     "+prev_word
 			if prev_word == "":
 				#this is the first word hence initialise
@@ -62,10 +64,11 @@ def print_relevant_words(rel_count, threshold):
 				print word+" ",
 				count = True
 		if count : print key+" " 
-	draw_graph(rel_count)
+	draw_graph(rel_count, threshold)
 
-def draw_graph(rel_count):
+def draw_graph(rel_count, threshold):
 	import networkx as nx
+	import matplotlib
 	import matplotlib.pyplot as plt
 	g = nx.Graph()
 	for key in rel_count:
@@ -79,6 +82,14 @@ def draw_graph(rel_count):
 					if not g.has_edge(word,key):
 						g.add_edge(word,key, weight=rel_count[key][word])
 	print g.nodes()
-	nx.draw_spring(g, node_size = 10, node_shape='s', alpha = 0.7, width = 1.3, with_labels = False )
-	plt.show()
+	#lets separate the edges here
+	edges_above_threshold = [(u,v) for (u,v,d) in g.edges(data = True) if d['weight']>=threshold]
+	edges_below_threshold = [(u,v) for (u,v,d) in g.edges(data = True) if d['weight']<threshold]
+	plt.figure(figsize=(100,100))
+	plt.axis('off')
+	#colors=range(g.number_of_edges())
+	pos = nx.spring_layout(g)
+	nx.draw(g, pos,  node_size = 2000, node_color = '#A0CBE2', node_shape='o', alpha = 0.7, width = 4.0, edgelist= edges_above_threshold, edge_color = 'blue', edge_cmap = plt.cm.Blues,  with_labels = True)
+	nx.draw_networkx_edges(g, pos, edgelist = edges_below_threshold, width = 2.0, alpha = 0.4, edge_color = 'red', style = 'solid')
 	plt.savefig('graph_out.png')
+	#plt.show()
