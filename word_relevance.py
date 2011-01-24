@@ -14,6 +14,14 @@ def get_distinct_words(input_fh, n):
 	input_fh.seek(0)
 	return word_list
 
+#build stop word list
+
+stop_words = []
+for line in open("stopwords.txt"):
+	for word in line.split():
+		stop_words.append(word)
+print stop_words
+
 def print_relevancy_matrix(rel_count):
 	print rel_count
 
@@ -23,38 +31,39 @@ def calculate_correlation(input_file, n):
 	rel_count = {}
 	prev_word = ""
 	for line in input_fh:
-		for word in line.split():
-			if word == "Phil":
-				print word + "<<<>>>" + prev_word
-	#		print word+"     "+prev_word
-			if prev_word == "":
-				#this is the first word hence initialise
-				rel_count[word]={}
-				prev_word = word
-				continue
+		for word in line.split() :
+			word.strip()
+			if word in stop_words:
+				print word
 			else:
-			#the previous word must be present 
-			#check if the previous word has already seen this word somewhere else
-				if rel_count[prev_word].has_key(word):
-	#				print prev_word + " has seen "+word
-					rel_count[prev_word][word] = rel_count[prev_word][word] + 1
-				else:
-					rel_count[prev_word][word] = 1
-			#add the current word to the matrix if it is not already present, update the relevance wrt to prev word and continue
-				if not rel_count.has_key(word):
-	#				print "The dict does not have "+word
+				if prev_word == "":
+					#this is the first word hence initialise
 					rel_count[word]={}
-					rel_count[word][prev_word] = 1
-			#check if the current word has already seen the previous word
+					prev_word = word
+					continue
 				else:
-					if rel_count[word].has_key(prev_word):
-						rel_count[word][prev_word] = rel_count[word][prev_word] + 1
+				#the previous word must be present 
+				#check if the previous word has already seen this word somewhere else
+					if rel_count[prev_word].has_key(word):
+	#					print prev_word + " has seen "+word
+						rel_count[prev_word][word] = rel_count[prev_word][word] + 1
 					else:
+						rel_count[prev_word][word] = 1
+				#add the current word to the matrix if it is not already present, update the relevance wrt to prev word and continue
+					if not rel_count.has_key(word):
+	#					print "The dict does not have "+word
+						rel_count[word]={}
 						rel_count[word][prev_word] = 1
-			prev_word = word
+				#check if the current word has already seen the previous word
+					else:
+						if rel_count[word].has_key(prev_word):
+							rel_count[word][prev_word] = rel_count[word][prev_word] + 1
+						else:
+							rel_count[word][prev_word] = 1
+				prev_word = word
 	print_relevancy_matrix(rel_count)
 	return rel_count
-
+	
 def print_relevant_words(rel_count, threshold):
 	"""right now we just print all those groups of words which might have high correlation. The words in the groups might be repeated. we are not printing words which are not relevant to any other word"""
 	for key in rel_count.keys():
@@ -85,11 +94,17 @@ def draw_graph(rel_count, threshold):
 	#lets separate the edges here
 	edges_above_threshold = [(u,v) for (u,v,d) in g.edges(data = True) if d['weight']>=threshold]
 	edges_below_threshold = [(u,v) for (u,v,d) in g.edges(data = True) if d['weight']<threshold]
-	plt.figure(figsize=(100,100))
+	plt.figure(figsize=(200,200))
 	plt.axis('off')
 	#colors=range(g.number_of_edges())
 	pos = nx.spring_layout(g)
-	nx.draw(g, pos,  node_size = 2000, node_color = '#A0CBE2', node_shape='o', alpha = 0.7, width = 4.0, edgelist= edges_above_threshold, edge_color = 'blue', edge_cmap = plt.cm.Blues,  with_labels = True)
-	nx.draw_networkx_edges(g, pos, edgelist = edges_below_threshold, width = 2.0, alpha = 0.4, edge_color = 'red', style = 'solid')
+	nx.draw(g, pos,  node_size = 2500, node_color = '#A0CBE2', node_shape='o', alpha = 0.7, width = 4.0, edgelist= edges_above_threshold, edge_color = 'blue', edge_cmap = plt.cm.Blues,  with_labels = True)
+	nx.draw_networkx_edges(g, pos, edgelist = edges_below_threshold, width = 2.0, alpha = 0.5, edge_color = 'red', style = 'solid')
 	plt.savefig('graph_out.png')
+	plt.clf()
+	#lets just plot a symbolic graph just for fun
+	plt.figure(figsize=(200,200))
+	plt.axis('off')
+	nx.draw(g, pos,  node_size = 30, node_color = 'red', node_shape='o', alpha = 0.85, width = 1.0, edge_color = 'black',  with_labels = False)
 	#plt.show()
+	plt.savefig('graph_out_no_labels.png')

@@ -9,15 +9,15 @@ def remove_non_printable(input_file,output_file="output.txt"):
 	prev_ch = ''
 	for line in input_fh:
 		for ch in line:
-			if ch in ['.',',',';',':']:
+			if ch in ['!','$','%','&','~','.',',',';',':','\"','\'','?','/','(',')']:
 				if prev_ch != ' ':
-					output_fh.write(" ")
+					output_fh.write(' ')
 					prev_ch = ' '
 			else:
 				if ch in alphanum:
-					output_fh.write(ch)
+					output_fh.write(string.lower(ch))
 					prev_ch = ch
 				if ch == ' ':
 					if prev_ch != ' ':
-						output_fh.write(ch)
+						output_fh.write(string.lower(ch))
 						prev_ch = ' '
