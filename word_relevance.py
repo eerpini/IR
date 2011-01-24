@@ -50,7 +50,7 @@ def calculate_correlation(input_file, n):
 					else:
 						rel_count[word][prev_word] = 1
 			prev_word = word
-#	print_relevancy_matrix(rel_count)
+	print_relevancy_matrix(rel_count)
 	return rel_count
 
 def print_relevant_words(rel_count, threshold):
@@ -62,4 +62,22 @@ def print_relevant_words(rel_count, threshold):
 				print word+" ",
 				count = True
 		if count : print key+" " 
-		
+	draw_graph(rel_count)
+
+def draw_graph(rel_count):
+	import networkx as nx
+	import matplotlib.pyplot as plt
+	g = nx.Graph()
+	for key in rel_count:
+		if not g.has_node(key):
+			g.add_node(key)
+			for word in rel_count[key]:
+				if not g.has_node(key):
+					g.add_node(word)
+					g.add_edge(word,key, weight=rel_count[key][word])
+				else:
+					if not g.has_edge(word,key):
+						g.add_edge(word,key, weight=rel_count[key][word])
+	nx.draw_spring(g, node_size = 10, node_shape='s', alpha = 0.7, width = 1.3, with_labels = False )
+	#plt.show()
+	plt.savefig('graph_out.png')
