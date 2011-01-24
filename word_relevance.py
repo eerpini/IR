@@ -94,7 +94,7 @@ def draw_graph(rel_count, threshold):
 	#lets separate the edges here
 	edges_above_threshold = [(u,v) for (u,v,d) in g.edges(data = True) if d['weight']>=threshold]
 	edges_below_threshold = [(u,v) for (u,v,d) in g.edges(data = True) if d['weight']<threshold]
-	plt.figure(figsize=(200,200))
+	plt.figure(figsize=(50,50))
 	plt.axis('off')
 	#colors=range(g.number_of_edges())
 	pos = nx.spring_layout(g)
@@ -103,7 +103,7 @@ def draw_graph(rel_count, threshold):
 	plt.savefig('graph_out.png')
 	plt.clf()
 	#lets just plot a symbolic graph just for fun
-	plt.figure(figsize=(200,200))
+	plt.figure(figsize=(10,10))
 	plt.axis('off')
 	nx.draw(g, pos,  node_size = 30, node_color = 'red', node_shape='o', alpha = 0.85, width = 1.0, edge_color = 'black',  with_labels = False)
 	#plt.show()
