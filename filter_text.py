@@ -9,7 +9,7 @@ def remove_non_printable(input_file,output_file="output.txt"):
 	for line in input_fh:
 		for ch in line:
 			if ch in ['.',',',';',':']:
-				output_fh.write(ch)
+				output_fh.write(" ")
 			else:
 				if ch in alphanum or ch==' ':
 					output_fh.write(ch)	

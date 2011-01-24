@@ -78,6 +78,7 @@ def draw_graph(rel_count):
 				else:
 					if not g.has_edge(word,key):
 						g.add_edge(word,key, weight=rel_count[key][word])
+	print g.nodes()
 	nx.draw_spring(g, node_size = 10, node_shape='s', alpha = 0.7, width = 1.3, with_labels = False )
-	#plt.show()
+	plt.show()
 	plt.savefig('graph_out.png')
